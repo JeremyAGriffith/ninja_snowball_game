@@ -1,18 +1,23 @@
 <html>
 <head>
-	<title>Character Game</title>
+	<title>Ninja snowball</title>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<style>
+		.controls { width: 500px; padding-left: 75px; font-family: "helvetica", sans-serif; }
+			.controls p { margin: 0; }
+	</style>
 </head>
 <body>
-
 	<div id="world" style="position:relative; border:1px solid black">
-		<div class="character" id="ch1" style="position:absolute; top:0px; left:0px; background:url('img/down1.png'); width: 59px; height: 86px;"></div>
+		<div class="character" id="ch1" style="position:absolute; top:0px; left:0px; background:url('imgs/down1.png'); width: 59px; height: 86px;"></div>
 	</div>
-	
-
+	<div class="controls">
+		<h2>Controls</h2>
+		<p><em>up, down, left & right</em> -- move character accordingly</p>
+		<p><em>space</em> -- throw snowball</p>
+	</div>
 	<script>
-
-	var world_w=200, world_h=200;
+	var world_w=500, world_h=500;
 	var snowballs=[];
 	var sb_index=0;
 	var player = new Player(0, 0, 1);
@@ -44,34 +49,31 @@
 		player.img_index++;
 		switch (e.keyCode){
 			case 32:
-				// console.log(player.pl_dir);
 				snowballs.push(new Snowball(player.pos.x, player.pos.y, player.pl_dir, sb_index));
 				sb_index++;
 			break;
 			case 37:
 				player.pos.x -= player.move_dist;
-				$('.character').css("background", "url(img/left"+player.img_index+".png)");
+				$('.character').css("background", "url(imgs/left"+player.img_index+".png)");
 				player.pl_dir = 1;
 			break;
 			case 39:
 				player.pos.x += player.move_dist;
-				$('.character').css("background", "url(img/right"+player.img_index+".png)");
+				$('.character').css("background", "url(imgs/right"+player.img_index+".png)");
 				player.pl_dir = 3;
 			break;
 			case 38:
 				player.pos.y -= player.move_dist;
-				$('.character').css("background", "url(img/top"+player.img_index+".png)");
+				$('.character').css("background", "url(imgs/top"+player.img_index+".png)");
 				player.pl_dir = 2;
 			break;
 			case 40:
 				player.pos.y += player.move_dist;
-				$('.character').css("background", "url(img/down"+player.img_index+".png)");
+				$('.character').css("background", "url(imgs/down"+player.img_index+".png)");
 				player.pl_dir = 4;
 			break;
 		}
 		checkBoundary(player, world_w, world_h);
-
-		// console.log(e.keyCode, player.pos.x);
 	}
 
 	function checkBoundary(obj, boundary_w, boundary_h)
@@ -102,10 +104,11 @@
 	function Snowball(x, y, dir, id){
 		this.pos = {x:x, y:y, width:20, height:20};
 		this.dir = dir;
+		this.speed = 30;
 		this.name = ".snowball#"+id;
 
 		this.create_snowball = function(){
-			$('#world').append("<div style=\"background:url('img/snowball.png'); width:20px; height:20px; background-size:20px 20px; position:absolute; top:"+player.pos.y+"px; left:"+player.pos.x+"px\" class='snowball' id='"+id+"'></div>");
+			$('#world').append("<div style=\"background:url('imgs/snowball.png'); width:20px; height:20px; background-size:20px 20px; position:absolute; top:"+player.pos.y+"px; left:"+player.pos.x+"px\" class='snowball' id='"+id+"'></div>");
 		}
 
 		this.create_snowball();
@@ -113,38 +116,31 @@
 
 	function update_snowballs(){
 		for (var i in snowballs){
-			// console.log(i, snowballs[i].name, snowballs[i].pos.x, snowballs[i].pos.y, snowballs[i].dir);
 			switch (snowballs[i].dir){
 				case 1:
-					snowballs[i].pos.x -= 10;
+					snowballs[i].pos.x -= snowballs[i].speed;
 					$(snowballs[i].name).css("left", snowballs[i].pos.x+"px");
 				break;
 				case 2:
-					snowballs[i].pos.y -= 10;
+					snowballs[i].pos.y -= snowballs[i].speed;
 					$(snowballs[i].name).css("top", snowballs[i].pos.y+"px");
 				break;
 				case 3:
-					snowballs[i].pos.x += 10;
+					snowballs[i].pos.x += snowballs[i].speed;
 					$(snowballs[i].name).css("left", snowballs[i].pos.x+"px");
 				break;
 				case 4:
-					snowballs[i].pos.y += 10;
+					snowballs[i].pos.y += snowballs[i].speed;
 					$(snowballs[i].name).css("top", snowballs[i].pos.y+"px");
 				break;
 			}
 
 			if (checkBoundary(snowballs[i], world_w, world_h)){
-				// console.log(i);
-				// console.log(sb_index, snowballs[i]);
 				$(snowballs[i].name).remove();
-				// console.log('removing', snowballs[i].name)
 				snowballs.splice(i, 1);
 			}
 		}
 	}
-
-	// console.log(document);
 	</script>
-
 </body>
 </html>
